@@ -1,9 +1,22 @@
-require "bundler/setup"
-require "related_ids_finder"
+# frozen_string_literal: true
+
+require 'bundler/setup'
+require 'simplecov'
+
+SimpleCov.start do
+  add_filter(/_spec.rb\Z/)
+end
+
+require 'related_ids_finder'
+
+if ENV['CODECOV_TOKEN']
+  require 'codecov'
+  SimpleCov.formatter = SimpleCov::Formatter::Codecov
+end
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
-  config.example_status_persistence_file_path = ".rspec_status"
+  config.example_status_persistence_file_path = '.rspec_status'
 
   # Disable RSpec exposing methods globally on `Module` and `main`
   config.disable_monkey_patching!
