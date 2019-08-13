@@ -1,5 +1,9 @@
 # RelatedIdsFinder
 
+[![Build Status](https://travis-ci.org/samesystem/related_ids_finder.svg?branch=master)](https://travis-ci.org/samesystem/related_ids_finder)
+[![codecov](https://codecov.io/gh/samesystem/related_ids_finder/branch/master/graph/badge.svg)](https://codecov.io/gh/samesystem/related_ids_finder)
+[![Documentation](https://readthedocs.org/projects/ansicolortags/badge/?version=latest)](https://samesystem.github.io/related_ids_finder)
+
 This tool will help you find all the associations and their ids related with given model.
 
 ## Installation
@@ -20,8 +24,86 @@ Or install it yourself as:
 
 ## Usage
 
+This tool will find all ids related with given model. Let's say your models look something like this:
+
 ```ruby
-RelatedIdsFinder.call(model: User, ids: [1, 2]) # => { Post => [1, 2, 3], Comment => [2, 4, 5], ... }
+class User < ActiveRecord::Base
+  has_many :comments
+  has_many :posts
+end
+
+class Post < ActiveRecord::Base
+  belongs_to :author, class_name: 'User'
+end
+
+class Comment < ActiveRecord::Base
+  belongs_to :post
+end
+```
+
+and your data looks like this:
+
+```ruby
+user1 = User.create! #=> #<User id: 1>
+post1 = Post.create(author: user1) #=> #<Post id: 1 ...>
+post2 = Post.create(author: user1) #=> #<Post id: 2 ...>
+Comment.create!(post: post1) #=> #<Comment id: 1 ...>
+
+user2 = User.create! #=> #<User id: 2>
+post3 = Post.create(author: user1) #=> #<Post id: 3 ...>
+Comment.create!(post: post3) #=> #<Comment id: 3 ...>
+```
+
+then `RelatedIdsFinder` will return all ids which are somehow related for a given record:
+
+```ruby
+RelatedIdsFinder.call(user1) # => { Post => [1, 2], Comment => [1] }
+```
+
+## Requirements
+
+In order to make this tool work you need to have your associations properly set
+
+## Usage examples
+
+This tool can be handy for various tasks, like:
+
+* removing records with all associations
+* detecting data which has missing associations (like, after incomplete delete)
+* analyzing dependencies
+* detecting circular dependencies
+* detecting out of sync objects (like, objects which are related with multiple users, but they shouldn't)
+* detecting god models
+* generating UML diagrams
+* you name it :)
+
+### Removing records with all associations
+
+```ruby
+ActiveRecord::Base.transaction do
+  RelatedIdsFinder.call(user1).each do |model, data|
+    model.unscoped.where(id: data.ids).delete_all
+  end
+end
+```
+
+### Detecting out of sync objects
+
+```ruby
+records_without_user = []
+RelatedIdsFinder.call(User.all.unscoped).each do |model, data|
+  records_without_user << model.unscoped.where.not(id: data.ids)
+end
+```
+
+### Analyzing dependencies
+
+```ruby
+post_dependency = RelatedIdsFinder
+  .call(user1)
+  .dependencies
+  .detect { |dependency| dependency.key?(Post) }
+post_dependency.depends_on #=> [User, Image, ...]
 ```
 
 ## Development

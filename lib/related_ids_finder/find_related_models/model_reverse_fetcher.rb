@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'related_ids_finder/any_fetcher'
+require 'related_ids_finder/find_related_models/any_fetcher'
 
 module RelatedIdsFinder
   class ModelReverseFetcher

@@ -2,8 +2,11 @@
 
 module RelatedIdsFinder
   class Configuration
+    require 'active_record'
+
     STDOUT_LOGGER = ActiveSupport::TaggedLogging.new(Logger.new(STDOUT))
     NOT_DEFINED = Object.new.freeze
+    INTERNAL_RAILS_MODELS = [ActiveRecord::InternalMetadata].freeze
 
     attr_accessor(
       :ignorable_reflections, :model_filter, :default_polymorphic_models,
@@ -45,7 +48,9 @@ module RelatedIdsFinder
     private
 
     def allowed_model?(model)
-      model_filter.call(model)
+      INTERNAL_RAILS_MODELS.exclude?(model) &&
+        !model.abstract_class &&
+        model_filter.call(model)
     end
 
     def fetch_target_models(reflection)

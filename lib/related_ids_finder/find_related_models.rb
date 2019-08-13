@@ -3,12 +3,11 @@
 module RelatedIdsFinder
   class FindRelatedModels
     require 'active_support'
-    require 'related_ids_finder/model_fetcher'
-    require 'related_ids_finder/model_forced_fetcher'
-    require 'related_ids_finder/model_reverse_fetcher'
+    require 'related_ids_finder/find_related_models/model_fetcher'
+    require 'related_ids_finder/find_related_models/model_forced_fetcher'
+    require 'related_ids_finder/find_related_models/model_reverse_fetcher'
+    require 'related_ids_finder/find_related_models/dependent_model'
     require 'related_ids_finder/dependent_hash'
-    require 'related_ids_finder/dependent_model'
-
 
     def self.call(*args)
       new(*args).call

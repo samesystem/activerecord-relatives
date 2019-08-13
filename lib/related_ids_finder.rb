@@ -17,7 +17,7 @@ module RelatedIdsFinder
       ids = scope_or_record.pluck(:id)
     end
 
-    FindRelatedModels.call(model: model, ids: ids)
+    FindRelatedModels.call(model: model, force_ids: ids)
   end
 
   def self.config
