@@ -21,6 +21,17 @@ module RelatedIdsFinder
       self.logger = STDOUT_LOGGER
     end
 
+    def reload
+      @active_record_models = nil
+      @reverse_reflection_models = nil
+      @target_models_for = nil
+    end
+
+    def ignore_reflection(model, reflection_name)
+      ignorable_reflections[model] ||= []
+      ignorable_reflections[model] << reflection_name.to_sym
+    end
+
     def active_record_models
       @active_record_models ||= \
         ActiveRecord::Base

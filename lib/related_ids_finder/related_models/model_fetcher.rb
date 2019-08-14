@@ -1,12 +1,14 @@
 # frozen_string_literal: true
 
-require 'related_ids_finder/find_related_models//any_fetcher'
-require 'related_ids_finder/find_related_models/reflection_scope'
+require 'related_ids_finder/related_models/any_fetcher'
+require 'related_ids_finder/related_models/reflection_scope'
 
 module RelatedIdsFinder
-  class FindRelatedModels
+  class RelatedModels
     class ModelFetcher
       include AnyFetcher
+
+      attr_reader :model
 
       def initialize(model, relations:)
         @model = model
@@ -31,22 +33,22 @@ module RelatedIdsFinder
         @scope ||= reflection_scopes.map(&:scope).reduce(:or)
       end
 
-      private
-
-      attr_reader :model, :relations
-
-      def reflection_scopes
-        @reflection_scopes ||= belongs_to_reflections.map { |it| scopes_for_reflection(it) }.flatten
-      end
-
       def belongs_to_reflections
         model.reflections.values.select(&:belongs_to?).reject do |reflection|
           RelatedIdsFinder.config.ignorable_reflections[model]&.include?(reflection.name)
         end
       end
 
+      private
+
+      attr_reader :relations
+
+      def reflection_scopes
+        @reflection_scopes ||= belongs_to_reflections.map { |it| scopes_for_reflection(it) }.flatten
+      end
+
       def target_models
-        @target_models ||= belongs_to_reflections.map { |it| FindRelatedModels.target_models_for(it) }.uniq
+        @target_models ||= belongs_to_reflections.map { |it| RelatedModels.target_models_for(it) }.uniq
       end
 
       def scopes_for_reflection(reflection)

@@ -19,6 +19,11 @@ ActiveRecord::Schema.define do
     t.integer :avatar_id, index: true
   end
 
+  create_table :user_friends, force: true do |t|
+    t.integer :user_id, index: true
+    t.integer :friend_id, index: true
+  end
+
   create_table :families, force: true do |t|
     t.string :name
 
@@ -33,6 +38,18 @@ ActiveRecord::Schema.define do
 
     t.integer :image_id, index: true
     t.integer :author_id, index: true
+  end
+
+  create_table :note_votes, force: true do |t|
+    t.integer :stars_count
+    t.integer :user_id, index: true
+    t.integer :note_id, index: true
+  end
+
+  create_table :notes, force: true do |t|
+    t.string :content
+    t.integer :notable_id, index: true
+    t.string :notable_type
   end
 
   create_table :images, force: true do |t|

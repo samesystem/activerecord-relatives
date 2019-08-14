@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RelatedIdsFinder
-  class FindRelatedModels
+  class RelatedModels
     class DependentModel
       attr_reader :model
 
@@ -9,8 +9,8 @@ module RelatedIdsFinder
         @model = model
       end
 
-      def free?
-        belongs_to_models.empty?
+      def with_polymorphic_associations?
+        model.reflections.values.any? { |it| it.belongs_to? && it.polymorphic? }
       end
 
       def child_models

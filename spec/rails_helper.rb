@@ -6,12 +6,20 @@ current_dir = File.expand_path(__dir__)
 Dir["#{current_dir}/dummy_app/app/models/*.rb"].each { |path| require(path) }
 
 require 'factory_bot'
+require 'database_cleaner'
 
 RSpec.configure do |config|
   config.include FactoryBot::Syntax::Methods
 
   config.before(:suite) do
     FactoryBot.find_definitions
+    DatabaseCleaner.strategy = :transaction
+  end
+
+  config.around do |example|
+    DatabaseCleaner.cleaning do
+      example.run
+    end
   end
 
   config.before do

@@ -3,15 +3,14 @@
 require 'rails_helper'
 
 module RelatedIdsFinder
-  RSpec.describe FindRelatedModels do
-    subject(:find_related_models) { described_class.new(model: Family, force_ids: [family.id]) }
+  RSpec.describe RelatedModels do
+    subject(:related_models) { described_class.new(model: Family, force_ids: [family.id]) }
 
     let(:family) { create(:family) }
     let(:user) { create(:user, family: family) }
-    let(:pet) { create(:pet, family: family, user: user) }
 
-    describe '#call' do
-      subject(:call) { find_related_models.call }
+    describe '#to_h' do
+      subject(:to_h) { related_models.to_h }
 
       before do
         RelatedIdsFinder.config.logger = nil
@@ -26,7 +25,7 @@ module RelatedIdsFinder
         end
 
         it 'raises exception' do
-          expect { call }.to raise_error(RelatedIdsFinder::DependentHash::DependOnSelfError)
+          expect { to_h }.to raise_error(RelatedIdsFinder::DependentHash::DependOnSelfError)
         end
       end
 
@@ -37,7 +36,7 @@ module RelatedIdsFinder
         end
 
         it 'raises exception' do
-          expect { call }.to raise_error(RelatedIdsFinder::DependentHash::CircularDependencyError)
+          expect { to_h }.to raise_error(RelatedIdsFinder::DependentHash::CircularDependencyError)
         end
       end
 
@@ -47,7 +46,7 @@ module RelatedIdsFinder
         let!(:user_message) { create(:message, recipient: user, author: message_author) }
 
         it 'collects all polymorphic references' do
-          expect(call[Message].ids)
+          expect(to_h[Message].ids)
             .to match_array([family_message.id, user_message.id])
         end
       end
@@ -58,7 +57,39 @@ module RelatedIdsFinder
         before { create(:user, family: family, avatar: image) }
 
         it 'collects reflected model ids' do
-          expect(call[Image].ids).to match_array([image.id])
+          expect(to_h[Image].ids).to match_array([image.id])
+        end
+      end
+
+      context 'when model A has "belongs_to B" reflection' do
+        context 'when model B has only polymorphic reflections' do
+          let(:model_a) { NoteVote }
+          let(:model_b) { Note }
+
+          context 'when model B has records' do
+            let!(:record_a) { create(:note_vote, note: record_b) }
+            let!(:record_b) { create(:note, notable: family) }
+
+            it 'includes model A records' do
+              expect(to_h[model_a].ids).to eq([record_a.id])
+            end
+
+            it 'includes model b records' do
+              expect(to_h[model_b].ids).to eq([record_b.id])
+            end
+          end
+
+          context 'when model B has no polymorphic records' do
+            let!(:record_a) { create(:note_vote, user: user) }
+
+            it 'includes model A records' do
+              expect(to_h[model_a].ids).to eq([record_a.id])
+            end
+
+            it 'includes model b without records' do
+              expect(to_h[model_b].ids).to be_empty
+            end
+          end
         end
       end
     end

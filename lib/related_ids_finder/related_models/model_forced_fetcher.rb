@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
-require 'related_ids_finder/find_related_models/any_fetcher'
+require 'related_ids_finder/related_models/any_fetcher'
 
 module RelatedIdsFinder
-  class FindRelatedModels
+  class RelatedModels
     class ModelForcedFetcher
+      include AnyFetcher
+
       attr_reader :ids
 
       def initialize(root_model, ids:)
