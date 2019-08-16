@@ -56,6 +56,22 @@ module RelatedIdsFinder
         it 'returns full result' do
           expect(result).to eq(not_dependent: ['a'], dependent1: ['b'], dependent2: ['c'])
         end
+
+        context 'when after_dependency_resolve hook is set' do
+          it 'triggers hooks' do
+            triggered_values = []
+            dependent_hash.before_dependency_resolve do |updates, old_data|
+              triggered_values << updates
+            end
+
+            dependent_hash.result
+            expect(triggered_values).to eq([
+              { not_dependent: ['a'] },
+              { dependent1: ['b'] },
+              { dependent2: ['c'] }
+            ])
+          end
+        end
       end
 
       context 'when some dependencies can not be satisfied' do

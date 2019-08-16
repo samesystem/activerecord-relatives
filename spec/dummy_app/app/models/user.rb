@@ -9,4 +9,6 @@ class User < ApplicationRecord
   belongs_to :avatar, class_name: 'Image'
 
   has_many :messages, as: :recipient
+  has_many :user_friends
+  has_many :friends, through: :user_friends
 end

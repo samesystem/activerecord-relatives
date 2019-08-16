@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 module RelatedIdsFinder
-  class FindRelatedModels
+  class RelatedModels
     RSpec.describe ModelReverseFetcher do
       subject(:model_reverse_fetcher) do
         described_class.new(

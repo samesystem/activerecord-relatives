@@ -11,7 +11,7 @@ module RelatedIdsFinder
 
     attr_reader :dependencies
 
-    delegate_missing_to :result
+    delegate :values, to: :result
 
     def initialize
       @dependencies = []
@@ -21,6 +21,10 @@ module RelatedIdsFinder
       dependencies.any? { |it| it.key == key }
     end
 
+    def keys
+      dependencies.map(&:key)
+    end
+
     def set(key, depends_on: [], &block)
       dependency = build_dependency(key, depends_on: depends_on, &block)
 
@@ -28,6 +32,12 @@ module RelatedIdsFinder
         include_dependencies_for(related, copy_from: dependency)
       end
       @dependencies << dependency
+    end
+
+    def before_dependency_resolve(&block)
+      @before_dependency_resolve ||= []
+      @before_dependency_resolve << block if block_given?
+      @before_dependency_resolve
     end
 
     def result
@@ -79,11 +89,17 @@ module RelatedIdsFinder
       free_dependencies.each do |dependency|
         raise DependencyError, "Updating same dependency twice #{dependency.key}" if result.key?(dependency.key)
 
-        result[dependency.key] = dependency.run(result)
+        result[dependency.key] = resolve_dependency(dependency, result: result)
       end
 
       not_free_dependencies.each { |it| it.remove_dependencies(result.keys) }
       result_from_free_dependencies(not_free_dependencies, result: result)
+    end
+
+    def resolve_dependency(dependency, result:)
+      dependency.run(result).tap do |updated_result|
+        before_dependency_resolve.each { |block| block.call({ dependency.key => updated_result }, result) }
+      end
     end
   end
 end

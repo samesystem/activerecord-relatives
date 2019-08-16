@@ -1,12 +1,15 @@
 # frozen_string_literal: true
 
-require 'related_ids_finder/version'
-
 module RelatedIdsFinder
-  require_relative './related_ids_finder/find_related_models'
+  require 'related_ids_finder/version'
+  require_relative './related_ids_finder/related_models'
   require_relative './related_ids_finder/configuration'
+  require_relative './related_ids_finder/relations_validator'
   class Error < StandardError; end
   # Your code goes here...
+
+  def self.dependency_resolver(scope_or_record)
+  end
 
   def self.call(scope_or_record)
     if scope_or_record.is_a?(ActiveRecord::Base)
@@ -17,7 +20,7 @@ module RelatedIdsFinder
       ids = scope_or_record.pluck(:id)
     end
 
-    FindRelatedModels.call(model: model, force_ids: ids)
+    RelatedModels.new(model: model, force_ids: ids)
   end
 
   def self.config

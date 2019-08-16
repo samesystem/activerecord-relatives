@@ -3,7 +3,7 @@
 require 'rails_helper'
 
 module RelatedIdsFinder
-  class FindRelatedModels
+  class RelatedModels
     RSpec.describe ModelFetcher do
       subject(:model_fetcher) { described_class.new(root_model, relations: relations) }
 

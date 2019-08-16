@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module RelatedIdsFinder
-  class FindRelatedModels
+  class RelatedModels
     module AnyFetcher
       def ids
         raise NotImplementedError
