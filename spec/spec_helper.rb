@@ -7,7 +7,7 @@ SimpleCov.start do
   add_filter(/_spec.rb\Z/)
 end
 
-require 'related_ids_finder'
+require 'activerecord-relatives'
 
 if ENV['CODECOV_TOKEN']
   require 'codecov'

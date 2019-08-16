@@ -2,16 +2,16 @@
 
 lib = File.expand_path('lib', __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'related_ids_finder/version'
+require 'activerecord-relatives/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'related_ids_finder'
-  spec.version       = RelatedIdsFinder::VERSION
+  spec.name          = 'activerecord-relatives'
+  spec.version       = ActiveRecord::Relatives::VERSION
   spec.authors       = ['Povilas Jurcys']
   spec.email         = ['povilas@samesystem.com']
 
   spec.summary       = 'Finds all ids related with given model'
-  spec.homepage      = 'https://github.com/samesystem/related_ids_finder'
+  spec.homepage      = 'https://github.com/samesystem/activerecord-relatives'
   spec.license       = 'MIT'
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
@@ -20,8 +20,8 @@ Gem::Specification.new do |spec|
     spec.metadata['allowed_push_host'] = "TODO: Set to 'http://mygemserver.com'"
 
     spec.metadata['homepage_uri'] = spec.homepage
-    spec.metadata['source_code_uri'] = 'https://github.com/samesystem/related_ids_finder'
-    spec.metadata['changelog_uri'] = "https://github.com/samesystem/related_ids_finder/blob/v#{RelatedIdsFinder::VERSION}/CHANGELOG.md"
+    spec.metadata['source_code_uri'] = 'https://github.com/samesystem/activerecord-relatives'
+    spec.metadata['changelog_uri'] = "https://github.com/samesystem/activerecord-relatives/blob/v#{ActiveRecord::Relatives::VERSION}/CHANGELOG.md"
 
   else
     raise 'RubyGems 2.0 or newer is required to protect against ' \
@@ -36,6 +36,8 @@ Gem::Specification.new do |spec|
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
+
+  spec.add_dependency 'activerecord', '~> 5.0'
 
   spec.add_development_dependency 'bundler', '~> 2.0'
   spec.add_development_dependency 'factory_bot'

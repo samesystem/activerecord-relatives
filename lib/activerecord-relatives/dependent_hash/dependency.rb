@@ -1,4 +1,4 @@
-module RelatedIdsFinder
+module ActiveRecord::Relatives
   class DependentHash
     class Dependency
       attr_reader :key, :depends_on

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-module RelatedIdsFinder
+module ActiveRecord::Relatives
   class RelatedModels
     RSpec.describe DependentModel do
       subject(:dependent_model) { described_class.new(model) }

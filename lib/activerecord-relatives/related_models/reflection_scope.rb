@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module RelatedIdsFinder
+module ActiveRecord::Relatives
   class RelatedModels
     class ReflectionScope
       def initialize(reflection, relations:, target_model:)

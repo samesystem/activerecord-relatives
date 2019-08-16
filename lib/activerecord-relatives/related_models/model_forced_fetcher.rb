@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-require 'related_ids_finder/related_models/any_fetcher'
+require 'activerecord-relatives/related_models/any_fetcher'
 
-module RelatedIdsFinder
+module ActiveRecord::Relatives
   class RelatedModels
     class ModelForcedFetcher
       include AnyFetcher

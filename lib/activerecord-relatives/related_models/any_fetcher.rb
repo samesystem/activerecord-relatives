@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module RelatedIdsFinder
+module ActiveRecord::Relatives
   class RelatedModels
     module AnyFetcher
       def ids
@@ -8,7 +8,7 @@ module RelatedIdsFinder
       end
 
       def huge?
-        ids.count > RelatedIdsFinder.config.max_batch_ids_count
+        ids.count > ActiveRecord::Relatives.config.max_batch_ids_count
       end
 
       def scope

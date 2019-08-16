@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module RelatedIdsFinder
+module ActiveRecord::Relatives
   class DependentHash
     require 'active_support'
     require_relative './dependent_hash/dependency'

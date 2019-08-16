@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-module RelatedIdsFinder
+module ActiveRecord::Relatives
   class RelatedModels
     require 'active_support'
-    require 'related_ids_finder/related_models/model_fetcher'
-    require 'related_ids_finder/related_models/model_forced_fetcher'
-    require 'related_ids_finder/related_models/model_reverse_fetcher'
-    require 'related_ids_finder/related_models/dependent_model'
-    require 'related_ids_finder/dependent_hash'
+    require 'activerecord-relatives/related_models/model_fetcher'
+    require 'activerecord-relatives/related_models/model_forced_fetcher'
+    require 'activerecord-relatives/related_models/model_reverse_fetcher'
+    require 'activerecord-relatives/related_models/dependent_model'
+    require 'activerecord-relatives/dependent_hash'
 
     delegate :[], :transform_values, :transform_keys, :values, to: :to_h
 
@@ -28,7 +28,6 @@ module RelatedIdsFinder
     def with_validations
       dup.tap do |new_object|
         new_object.send(:dependency_resolver).before_dependency_resolve do |updates, result|
-          p "validating #{updates.keys}"
           RelationValidator.new(updates.values.first, other_relations: result).validate
         end
       end
@@ -63,7 +62,7 @@ module RelatedIdsFinder
     end
 
     def config
-      RelatedIdsFinder.config
+      ActiveRecord::Relatives.config
     end
 
     def hidden_models(dependency_resolver)

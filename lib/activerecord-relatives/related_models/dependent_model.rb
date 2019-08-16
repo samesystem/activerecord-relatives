@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module RelatedIdsFinder
+module ActiveRecord::Relatives
   class RelatedModels
     class DependentModel
       attr_reader :model
@@ -21,14 +21,14 @@ module RelatedIdsFinder
 
       def belongs_to_models
         @belongs_to_models ||= model.reflections.values.select(&:belongs_to?).flat_map do |reflection|
-          RelatedIdsFinder.config.target_models_for(reflection)
+          ActiveRecord::Relatives.config.target_models_for(reflection)
         end.uniq
       end
 
       private
 
       def all_models
-        @all_models ||= RelatedIdsFinder.config.active_record_models.map { |it| self.class.new(it) }
+        @all_models ||= ActiveRecord::Relatives.config.active_record_models.map { |it| self.class.new(it) }
       end
     end
   end

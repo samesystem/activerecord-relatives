@@ -2,9 +2,9 @@
 
 require 'rails_helper'
 
-RSpec.describe RelatedIdsFinder do
+RSpec.describe ActiveRecord::Relatives do
   it 'has a version number' do
-    expect(RelatedIdsFinder::VERSION).not_to be nil
+    expect(ActiveRecord::Relatives::VERSION).not_to be nil
   end
 
   describe '.call' do
