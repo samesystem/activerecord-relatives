@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-module RelatedIdsFinder
+module ActiveRecord::Relatives
   class RelationValidator
     RelationValidationError = Class.new(StandardError)
 
-    require 'related_ids_finder/relation_validator/out_of_scope_warning'
+    require 'activerecord-relatives/relation_validator/out_of_scope_warning'
     attr_reader :warnings
 
     def initialize(relation, other_relations:)
@@ -31,7 +31,7 @@ module RelatedIdsFinder
     attr_reader :relations, :relation
 
     def validatable?
-      relation.is_a?(RelatedIdsFinder::RelatedModels::ModelFetcher)
+      relation.is_a?(ActiveRecord::Relatives::RelatedModels::ModelFetcher)
     end
 
     def validate_relation
@@ -41,7 +41,7 @@ module RelatedIdsFinder
     end
 
     def validate_reflection(reflection)
-      RelatedIdsFinder.config.target_models_for(reflection).map do |target|
+      ActiveRecord::Relatives.config.target_models_for(reflection).map do |target|
         scope = relation.scope
         scope = scope.where(reflection.foreign_type => target.name) if reflection.polymorphic?
         validate_reflection_scope(reflection, scope: scope, target: target)

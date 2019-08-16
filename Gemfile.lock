@@ -1,7 +1,8 @@
 PATH
   remote: .
   specs:
-    related_ids_finder (0.1.0)
+    activerecord-relatives (0.1.0)
+      activerecord (~> 5.0)
 
 GEM
   remote: https://rubygems.org/
@@ -175,6 +176,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  activerecord-relatives!
   bundler (~> 2.0)
   codecov
   database_cleaner
@@ -182,7 +184,6 @@ DEPENDENCIES
   pry-byebug
   rails (~> 5.0)
   rake (~> 10.0)
-  related_ids_finder!
   rspec (~> 3)
   rubocop
   rubocop-performance

@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-module RelatedIdsFinder
+module ActiveRecord::Relatives
   RSpec.describe RelatedModels do
     subject(:related_models) { described_class.new(model: Family, force_ids: [family.id]) }
 
@@ -13,30 +13,30 @@ module RelatedIdsFinder
       subject(:to_h) { related_models.to_h }
 
       before do
-        RelatedIdsFinder.config.logger = nil
-        RelatedIdsFinder.config.ignorable_reflections[User] = %i[mother father]
-        RelatedIdsFinder.config.ignorable_reflections[Family] = %i[created_by]
+        ActiveRecord::Relatives.config.logger = nil
+        ActiveRecord::Relatives.config.ignorable_reflections[User] = %i[mother father]
+        ActiveRecord::Relatives.config.ignorable_reflections[Family] = %i[created_by]
       end
 
       context 'when references to same model are defined' do
         before do
           # User#mother and User#father references to User class
-          RelatedIdsFinder.config.ignorable_reflections[User] -= %i[mother father]
+          ActiveRecord::Relatives.config.ignorable_reflections[User] -= %i[mother father]
         end
 
         it 'raises exception' do
-          expect { to_h }.to raise_error(RelatedIdsFinder::DependentHash::DependOnSelfError)
+          expect { to_h }.to raise_error(ActiveRecord::Relatives::DependentHash::DependOnSelfError)
         end
       end
 
       context 'when circular references are present' do
         before do
           # Family#created_by points to user, but user has User#family reference
-          RelatedIdsFinder.config.ignorable_reflections[Family] -= %i[created_by]
+          ActiveRecord::Relatives.config.ignorable_reflections[Family] -= %i[created_by]
         end
 
         it 'raises exception' do
-          expect { to_h }.to raise_error(RelatedIdsFinder::DependentHash::CircularDependencyError)
+          expect { to_h }.to raise_error(ActiveRecord::Relatives::DependentHash::CircularDependencyError)
         end
       end
 

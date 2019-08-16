@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-require 'related_ids_finder/related_models/any_fetcher'
-require 'related_ids_finder/related_models/reflection_scope'
+require 'activerecord-relatives/related_models/any_fetcher'
+require 'activerecord-relatives/related_models/reflection_scope'
 
-module RelatedIdsFinder
+module ActiveRecord::Relatives
   class RelatedModels
     class ModelFetcher
       include AnyFetcher
@@ -35,7 +35,7 @@ module RelatedIdsFinder
 
       def belongs_to_reflections
         model.reflections.values.select(&:belongs_to?).reject do |reflection|
-          RelatedIdsFinder.config.ignorable_reflections[model]&.include?(reflection.name)
+          ActiveRecord::Relatives.config.ignorable_reflections[model]&.include?(reflection.name)
         end
       end
 
@@ -52,7 +52,7 @@ module RelatedIdsFinder
       end
 
       def scopes_for_reflection(reflection)
-        target_models = RelatedIdsFinder.config.target_models_for(reflection)
+        target_models = ActiveRecord::Relatives.config.target_models_for(reflection)
         target_models.map do |target_model|
           ReflectionScope.new(reflection, target_model: target_model, relations: relations)
         end

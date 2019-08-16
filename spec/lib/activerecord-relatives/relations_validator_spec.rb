@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-module RelatedIdsFinder
+module ActiveRecord::Relatives
   RSpec.describe RelationsValidator do
     subject(:validator) { described_class.new(relations) }
     let(:relations) { {} }
@@ -15,7 +15,7 @@ module RelatedIdsFinder
       let(:user) { create(:user, family: family) }
 
       let(:relations) do
-        RelatedIdsFinder.call(family)
+        ActiveRecord::Relatives.call(family)
       end
 
       context 'when same object references multiple records of same model' do

@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-module RelatedIdsFinder
+module ActiveRecord::Relatives
   class RelationsValidator
-    require 'related_ids_finder/relation_validator'
+    require 'activerecord-relatives/relation_validator'
     attr_reader :warnings
 
     def initialize(relations)
@@ -37,7 +37,7 @@ module RelatedIdsFinder
 
     def non_reverse_relations
       relations.values.select do |relation|
-        relation.is_a?(RelatedIdsFinder::RelatedModels::ModelFetcher)
+        relation.is_a?(ActiveRecord::Relatives::RelatedModels::ModelFetcher)
       end
     end
   end

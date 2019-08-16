@@ -23,9 +23,9 @@ RSpec.configure do |config|
   end
 
   config.before do
-    RelatedIdsFinder.instance_variable_set(:@config, nil)
-    RelatedIdsFinder.config.logger = nil
-    RelatedIdsFinder.config.ignorable_reflections[User] = %i[mother father]
-    RelatedIdsFinder.config.ignorable_reflections[Family] = %i[created_by]
+    ActiveRecord::Relatives.instance_variable_set(:@config, nil)
+    ActiveRecord::Relatives.config.logger = nil
+    ActiveRecord::Relatives.config.ignorable_reflections[User] = %i[mother father]
+    ActiveRecord::Relatives.config.ignorable_reflections[Family] = %i[created_by]
   end
 end

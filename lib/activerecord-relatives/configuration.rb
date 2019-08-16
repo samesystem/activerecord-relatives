@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module RelatedIdsFinder
+module ActiveRecord::Relatives
   class Configuration
     require 'active_record'
 
@@ -45,7 +45,7 @@ module RelatedIdsFinder
 
       return [] if ignorable_reflections.dig(model)&.include?(reflection.name)
 
-      @target_models_for ||= RelatedIdsFinder.config.default_polymorphic_models.dup
+      @target_models_for ||= ActiveRecord::Relatives.config.default_polymorphic_models.dup
       @target_models_for[model] ||= {}
       @target_models_for[model][reflection.name.to_sym] ||= fetch_target_models(reflection)
       target_models = @target_models_for[model][reflection.name.to_sym]

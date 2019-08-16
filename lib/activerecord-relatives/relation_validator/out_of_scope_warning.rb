@@ -1,4 +1,4 @@
-module RelatedIdsFinder
+module ActiveRecord::Relatives
   class RelationValidator
     class OutOfScopeWarning
       MESSAGE_TEMPLATE = \
@@ -6,7 +6,7 @@ module RelatedIdsFinder
         'points to %{reflection_model} (ID: %{extra_ids}), ' \
         'but relations does not include those IDs. ' \
         'If needed, you can ignore this association via config: ' \
-        '`RelatedIdsFinder.config.ignore_reflection(%{model}, :%{reflection_name})`'
+        '`ActiveRecord::Relatives.config.ignore_reflection(%{model}, :%{reflection_name})`'
 
       attr_reader :reflection, :extra_ids, :reflection_target
 

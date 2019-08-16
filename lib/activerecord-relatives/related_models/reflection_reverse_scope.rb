@@ -1,4 +1,4 @@
-module RelatedIdsFinder
+module ActiveRecord::Relatives
   class RelatedModels
     class ReflectionReverseScope
       def initialize(reflection, child_relation:)

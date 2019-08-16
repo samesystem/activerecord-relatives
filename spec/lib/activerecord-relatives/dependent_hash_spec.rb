@@ -2,7 +2,7 @@
 
 require 'rails_helper'
 
-module RelatedIdsFinder
+module ActiveRecord::Relatives
   RSpec.describe DependentHash do
     subject(:dependent_hash) { described_class.new }
 
@@ -27,7 +27,7 @@ module RelatedIdsFinder
 
         it 'raises error' do
           expect { dependent_hash.set(:dependent2, depends_on: %i[dependent4]) { [2] } }
-            .to raise_error(RelatedIdsFinder::DependentHash::CircularDependencyError)
+            .to raise_error(ActiveRecord::Relatives::DependentHash::CircularDependencyError)
         end
       end
     end

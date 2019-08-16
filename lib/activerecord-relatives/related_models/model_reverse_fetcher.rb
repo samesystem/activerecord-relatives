@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
-require 'related_ids_finder/related_models/any_fetcher'
-require 'related_ids_finder/related_models/reflection_reverse_scope'
+require 'activerecord-relatives/related_models/any_fetcher'
+require 'activerecord-relatives/related_models/reflection_reverse_scope'
 
-module RelatedIdsFinder
+module ActiveRecord::Relatives
   class RelatedModels
     class ModelReverseFetcher
       include AnyFetcher
 
       def self.child_reflections_for(root_model)
-        RelatedIdsFinder.config.active_record_models.flat_map do |child|
+        ActiveRecord::Relatives.config.active_record_models.flat_map do |child|
           child.reflections.values.select(&:belongs_to?).select do |reflection|
-            targets = RelatedIdsFinder.config.target_models_for(reflection, include_reverse: true)
+            targets = ActiveRecord::Relatives.config.target_models_for(reflection, include_reverse: true)
             targets.include?(root_model)
           end
         end

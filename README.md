@@ -1,8 +1,8 @@
-# RelatedIdsFinder
+# ActiveRecord::Relatives
 
-[![Build Status](https://travis-ci.org/samesystem/related_ids_finder.svg?branch=master)](https://travis-ci.org/samesystem/related_ids_finder)
-[![codecov](https://codecov.io/gh/samesystem/related_ids_finder/branch/master/graph/badge.svg)](https://codecov.io/gh/samesystem/related_ids_finder)
-[![Documentation](https://readthedocs.org/projects/ansicolortags/badge/?version=latest)](https://samesystem.github.io/related_ids_finder)
+[![Build Status](https://travis-ci.org/samesystem/activerecord-relatives.svg?branch=master)](https://travis-ci.org/samesystem/activerecord-relatives)
+[![codecov](https://codecov.io/gh/samesystem/activerecord-relatives/branch/master/graph/badge.svg)](https://codecov.io/gh/samesystem/activerecord-relatives)
+[![Documentation](https://readthedocs.org/projects/ansicolortags/badge/?version=latest)](https://samesystem.github.io/activerecord-relatives)
 
 This tool will help you find all the associations and their ids related with given model.
 
@@ -11,7 +11,7 @@ This tool will help you find all the associations and their ids related with giv
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'related_ids_finder'
+gem 'activerecord-relatives'
 ```
 
 And then execute:
@@ -20,7 +20,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install related_ids_finder
+    $ gem install activerecord-relatives
 
 ## Usage
 
@@ -54,10 +54,10 @@ post3 = Post.create(author: user1) #=> #<Post id: 3 ...>
 Comment.create!(post: post3) #=> #<Comment id: 3 ...>
 ```
 
-then `RelatedIdsFinder` will return all ids which are somehow related for a given record:
+then `ActiveRecord::Relatives` will return all ids which are somehow related for a given record:
 
 ```ruby
-RelatedIdsFinder.call(user1) # => { Post => [1, 2], Comment => [1] }
+ActiveRecord::Relatives.call(user1) # => { Post => [1, 2], Comment => [1] }
 ```
 
 ## Requirements
@@ -81,7 +81,7 @@ This tool can be handy for various tasks, like:
 
 ```ruby
 ActiveRecord::Base.transaction do
-  RelatedIdsFinder.call(user1).each do |model, data|
+  ActiveRecord::Relatives.call(user1).each do |model, data|
     model.unscoped.where(id: data.ids).delete_all
   end
 end
@@ -91,7 +91,7 @@ end
 
 ```ruby
 records_without_user = []
-RelatedIdsFinder.call(User.all.unscoped).each do |model, data|
+ActiveRecord::Relatives.call(User.all.unscoped).each do |model, data|
   records_without_user << model.unscoped.where.not(id: data.ids)
 end
 ```
@@ -99,7 +99,7 @@ end
 ### Analyzing dependencies
 
 ```ruby
-post_dependency = RelatedIdsFinder
+post_dependency = ActiveRecord::Relatives
   .call(user1)
   .dependencies
   .detect { |dependency| dependency.key?(Post) }
@@ -114,7 +114,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/samesystem/related_ids_finder. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/samesystem/activerecord-relatives. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 
@@ -122,4 +122,4 @@ The gem is available as open source under the terms of the [MIT License](https:/
 
 ## Code of Conduct
 
-Everyone interacting in the RelatedIdsFinder project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/samesystem/related_ids_finder/blob/master/CODE_OF_CONDUCT.md).
+Everyone interacting in the ActiveRecord::Relatives project’s codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/samesystem/activerecord-relatives/blob/master/CODE_OF_CONDUCT.md).
