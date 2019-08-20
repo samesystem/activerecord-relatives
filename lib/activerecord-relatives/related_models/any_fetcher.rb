@@ -4,11 +4,15 @@ module ActiveRecord::Relatives
   class RelatedModels
     module AnyFetcher
       def ids
-        raise NotImplementedError
+        @ids ||= scope.pluck(model.primary_key).compact.uniq
       end
 
       def huge?
-        ids.count > ActiveRecord::Relatives.config.max_batch_ids_count
+        count > ActiveRecord::Relatives.config.max_batch_ids_count
+      end
+
+      def count
+        @count ||= @ids&.count || scope.count
       end
 
       def scope

@@ -19,10 +19,6 @@ module ActiveRecord::Relatives
         "<#{self.class} model=#{model.name}, related=[#{target_models.map(&:name).join(', ')}]>"
       end
 
-      def ids
-        @ids ||= scope.pluck(model.primary_key).compact.uniq
-      end
-
       def batch_scopes
         [scope]
       end

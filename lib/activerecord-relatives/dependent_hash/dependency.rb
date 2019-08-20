@@ -1,13 +1,14 @@
 module ActiveRecord::Relatives
   class DependentHash
     class Dependency
-      attr_reader :key, :depends_on
+      attr_reader :key, :depends_on, :initially_depends_on
 
       def initialize(key:, block:, depends_on:)
         @block = block
         @depends_on = []
         @key = key
         add_dependencies(depends_on)
+        @initially_depends_on = depends_on.dup
       end
 
       def free?
