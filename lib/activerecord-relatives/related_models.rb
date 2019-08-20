@@ -68,7 +68,7 @@ module ActiveRecord::Relatives
     end
 
     def hidden_models(dependency_resolver)
-      missed_models = active_record_models - empty_polymorphic_models - dependency_resolver.dependencies.map(&:key)
+      active_record_models - empty_polymorphic_models - dependency_resolver.keys
     end
 
     def empty_polymorphic_models
