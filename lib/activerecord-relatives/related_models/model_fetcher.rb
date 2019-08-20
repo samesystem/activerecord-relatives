@@ -19,12 +19,8 @@ module ActiveRecord::Relatives
         "<#{self.class} model=#{model.name}, related=[#{target_models.map(&:name).join(', ')}]>"
       end
 
-      def batch_scopes
-        [scope]
-      end
-
       def scope
-        @scope ||= reflection_scopes.map(&:scope).reduce(:or)
+        @scope ||= reflection_scopes.map(&:scope).reduce(:or) || model.unscoped.none
       end
 
       def belongs_to_reflections
