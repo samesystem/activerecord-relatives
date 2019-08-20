@@ -8,7 +8,7 @@ module ActiveRecord::Relatives
       end
 
       def huge?
-        ActiveRecord::Relatives.config.max_batch_ids_count > 0 &&
+        ActiveRecord::Relatives.config.max_batch_ids_count <= 0 ||
           count > ActiveRecord::Relatives.config.max_batch_ids_count
       end
 
