@@ -23,24 +23,36 @@ module ActiveRecord::Relatives
       end
 
       def ids
-        @ids ||= child_reflections
-                .map { |it| reflection_scope(it) }
-                .compact
-                .flat_map(&:ids)
+        @ids ||= scope.pluck(root_model.primary_key)
       end
 
       def scope
-        child_reflections.map { |it| reflection_scope(it) }.compact.map(&:scope).reduce(:or)
+        @scope ||= begin
+          initial_scope = root_model.unscoped
+          child_scopes
+            .map { |child_scope| initial_scope.where(root_model.primary_key => child_scope) }
+            .reduce(:or)
+        end
       end
 
       private
 
       attr_reader :root_model, :relations
 
+      def child_scopes
+        child_reflections.map do |reflection|
+          reflection_scope(reflection)&.scope&.select(reflection.foreign_key)
+        end.compact
+      end
+
       def reflection_scope(reflection)
         return unless relations.key?(reflection.active_record)
 
-        ReflectionReverseScope.new(reflection, child_relation: relations.fetch(reflection.active_record))
+        ReflectionReverseScope.new(
+          reflection,
+          child_relation: relations.fetch(reflection.active_record),
+          root_model: root_model
+        )
       end
 
       def child_reflections

@@ -1,9 +1,10 @@
 module ActiveRecord::Relatives
   class RelatedModels
     class ReflectionReverseScope
-      def initialize(reflection, child_relation:)
+      def initialize(reflection, child_relation:, root_model:)
         @child_relation = child_relation
         @reflection = reflection
+        @root_model = root_model
       end
 
       def ids
@@ -25,7 +26,7 @@ module ActiveRecord::Relatives
 
       private
 
-      attr_reader :reflection, :child_relation
+      attr_reader :reflection, :child_relation, :root_model
 
       def child_model
         reflection.active_record
