@@ -27,19 +27,13 @@ module ActiveRecord::Relatives
 
     def with_validations
       dup.tap do |new_object|
-        new_object.send(:dependency_resolver).before_dependency_resolve do |updates, result|
-          RelationValidator.new(updates.values.first, other_relations: result).validate
+        new_object.dependency_resolver.before_dependency_resolve do |data|
+          new_relation = data[:partial_result]
+          old_relations = data[:old_result]
+          RelationValidator.new(new_relation, other_relations: old_relations).validate
         end
       end
     end
-
-    def validate!
-      RelationsValidator.new(to_h).validate!
-    end
-
-    private
-
-    attr_reader :force_ids, :model
 
     def dependency_resolver
       @dependency_resolver ||= begin
@@ -61,6 +55,14 @@ module ActiveRecord::Relatives
       end
     end
 
+    def validate!
+      RelationsValidator.new(to_h).validate!
+    end
+
+    private
+
+    attr_reader :force_ids, :model
+
     def config
       ActiveRecord::Relatives.config
     end
@@ -80,21 +82,14 @@ module ActiveRecord::Relatives
       config.active_record_models
     end
 
-    def inform(message)
-      config.logger&.info("#{Time.current.strftime('%H:%M:%S')} | #{message}")
-    end
-
     def setup_dependency_resolver(root_model:, force_ids: nil, dependency_resolver:)
       root_dependent_model = DependentModel.new(root_model)
 
       dependency_resolver.set(root_model, depends_on: root_dependent_model.belongs_to_models) do |relations|
-        ids_count = relations.values_at(*root_dependent_model.belongs_to_models).compact.flat_map(&:ids).count
-        inform("-- fetching #{root_model} (depends by #{ids_count} ids on [#{root_dependent_model.belongs_to_models.join(' -> ')}])")
-
         if force_ids
-          ModelForcedFetcher.new(root_model, ids: force_ids).tap(&:ids)
+          ModelForcedFetcher.new(root_model, ids: force_ids)
         else
-          ModelFetcher.new(root_model, relations: relations).tap(&:ids)
+          ModelFetcher.new(root_model, relations: relations)
         end
       end
 
@@ -112,12 +107,11 @@ module ActiveRecord::Relatives
 
       dependency_resolver.set(root_model, depends_on: child_models) do |relations|
         ids_count = relations.values_at(*child_models).compact.map(&:ids).flatten.count
-        inform("-- reverse fetching #{root_model} (depends by #{ids_count} ids on #{child_models.join(' -> ')})")
 
         ModelReverseFetcher.new(
           root_model: root_model,
           relations: relations
-        ).tap(&:ids)
+        )
       end
 
       dependency_resolver
