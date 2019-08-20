@@ -60,15 +60,13 @@ module ActiveRecord::Relatives
         context 'when after_dependency_resolve hook is set' do
           it 'triggers hooks' do
             triggered_values = []
-            dependent_hash.before_dependency_resolve do |updates, old_data|
-              triggered_values << updates
+            dependent_hash.before_dependency_resolve do |info|
+              triggered_values << info[:partial_result]
             end
 
             dependent_hash.result
             expect(triggered_values).to eq([
-              { not_dependent: ['a'] },
-              { dependent1: ['b'] },
-              { dependent2: ['c'] }
+              ['a'], ['b'], ['c']
             ])
           end
         end

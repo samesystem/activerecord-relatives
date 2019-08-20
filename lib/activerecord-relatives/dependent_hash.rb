@@ -98,7 +98,10 @@ module ActiveRecord::Relatives
 
     def resolve_dependency(dependency, result:)
       dependency.run(result).tap do |updated_result|
-        before_dependency_resolve.each { |block| block.call({ dependency.key => updated_result }, result) }
+        before_dependency_resolve.each do |block|
+          data = { dependency: dependency, partial_result: updated_result, old_result: result }
+          block.call(data)
+        end
       end
     end
   end

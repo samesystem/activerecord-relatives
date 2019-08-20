@@ -20,9 +20,7 @@ module ActiveRecord::Relatives
       end
 
       def ids
-        @ids ||= begin
-          batch_scopes.map { |batch_scope| batch_scope.pluck(:id) }.flatten.compact.uniq
-        end
+        @ids ||= scope.pluck(model.primary_key).compact.uniq
       end
 
       def batch_scopes
