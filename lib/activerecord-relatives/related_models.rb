@@ -9,7 +9,7 @@ module ActiveRecord::Relatives
     require 'activerecord-relatives/related_models/dependent_model'
     require 'activerecord-relatives/dependent_hash'
 
-    delegate :[], :transform_values, :transform_keys, :values, to: :to_h
+    delegate :[], :transform_values, :transform_keys, :values, :each, to: :to_h
 
     def initialize(model:, force_ids: nil)
       @model = model
@@ -106,8 +106,6 @@ module ActiveRecord::Relatives
       child_models = ModelReverseFetcher.child_reflections_for(root_model).map(&:active_record)
 
       dependency_resolver.set(root_model, depends_on: child_models) do |relations|
-        ids_count = relations.values_at(*child_models).compact.map(&:ids).flatten.count
-
         ModelReverseFetcher.new(
           root_model: root_model,
           relations: relations

@@ -44,6 +44,19 @@ module ActiveRecord::Relatives
       describe '#scope' do
         subject(:scope) { model_reverse_fetcher.scope }
 
+        context 'when no relation points to root model' do
+          let(:model_reverse_fetcher) do
+            described_class.new(
+              root_model: Image,
+              relations: {}
+            )
+          end
+
+          it 'returns empty scope' do
+            expect(scope.to_sql).to be_blank
+          end
+        end
+
         context 'when multiple relations points to root model' do
           let(:model_reverse_fetcher) do
             described_class.new(

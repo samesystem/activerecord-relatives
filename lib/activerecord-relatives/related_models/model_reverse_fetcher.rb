@@ -25,9 +25,12 @@ module ActiveRecord::Relatives
       def scope
         @scope ||= begin
           initial_scope = model.unscoped
-          child_scopes
+          full_scope = \
+            child_scopes
             .map { |child_scope| initial_scope.where(model.primary_key => child_scope) }
             .reduce(:or)
+
+          full_scope.nil? ? initial_scope.none : full_scope
         end
       end
 
