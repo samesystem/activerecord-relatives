@@ -12,7 +12,8 @@ module ActiveRecord::Relatives
         )
       end
 
-      let(:user) { create(:user, avatar: image) }
+      let(:user) { create(:user, avatar: image, family: family) }
+      let(:family) { create(:family) }
       let(:image) { create(:image) }
       let(:user_fetcher) { ModelForcedFetcher.new(User, ids: [user.id]) }
 
@@ -36,6 +37,32 @@ module ActiveRecord::Relatives
 
           it 'returns correct root model ids' do
             expect(ids).to match_array([image.id])
+          end
+        end
+      end
+
+      describe '#scope' do
+        subject(:scope) { model_reverse_fetcher.scope }
+
+        context 'when multiple relations points to root model' do
+          let(:model_reverse_fetcher) do
+            described_class.new(
+              root_model: Family,
+              relations: {
+                User => user_fetcher,
+                Message => message_fetcher
+              }
+            )
+          end
+
+          let(:message_fetcher) { ModelForcedFetcher.new(Image, ids: [image.id]) }
+          let!(:message) { create(:message, recipient: family) }
+
+          it 'returns scope with multi subselects' do
+            expect(scope.to_sql)
+              .to match(%r{^SELECT "families".* FROM "families"})
+              .and match(%r{IN \(SELECT "messages"."recipient_id"})
+              .and match(%r{IN \(SELECT "messages"."recipient_id"})
           end
         end
       end
