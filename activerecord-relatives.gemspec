@@ -37,12 +37,12 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'activerecord', '>= 5.0'
+  spec.add_dependency 'activerecord', '>= 6.0'
 
   spec.add_development_dependency 'bundler', '~> 2.0'
-  spec.add_development_dependency 'factory_bot'
+  spec.add_development_dependency 'factory_bot', '~> 5.1'
   spec.add_development_dependency 'pry-byebug'
-  spec.add_development_dependency 'rails', '~> 5.0'
+  spec.add_development_dependency 'rails', '~> 6.0'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3'
   spec.add_development_dependency 'database_cleaner'

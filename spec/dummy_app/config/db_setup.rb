@@ -13,6 +13,10 @@ ActiveRecord::Base.establish_connection(
 
 # Set up database tables and columns
 ActiveRecord::Schema.define do
+  create_table :schema_migrations, force: true do |t|
+    t.string :version, index: true
+  end
+
   create_table :users, force: true do |t|
     t.string :name
     t.integer :family_id, index: true
